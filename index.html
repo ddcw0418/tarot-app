@@ -14,126 +14,92 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px 16px 60px;
+    padding: 20px 16px 50px;
   }
-  h1 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    letter-spacing: 2px;
-  }
-  .subtitle {
-    font-size: 13px;
-    color: #b8a8d8;
-    margin-bottom: 28px;
-    text-align: center;
-  }
-  .stage {
-    width: 220px;
-    height: 360px;
-    perspective: 1200px;
-    margin-bottom: 24px;
-  }
-  .card {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
-    cursor: pointer;
-  }
-  .card.flipped { transform: rotateY(180deg); }
-  .face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    backface-visibility: hidden;
+  h1 { font-size: 22px; font-weight: 600; letter-spacing: 2px; }
+  .subtitle { font-size: 13px; color: #b8a8d8; margin: 4px 0 14px; text-align: center; }
+
+  .stats-bar {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.15);
-  }
-  .back {
-    background: linear-gradient(135deg, #2d1b4e, #4a2c6e);
-    font-size: 60px;
-  }
-  .back::after {
-    content: "✦";
-    color: rgba(255,255,255,0.3);
-    font-size: 100px;
-    position: absolute;
-  }
-  .front {
-    background: linear-gradient(160deg, #2a1f4a, #1a1230);
-    transform: rotateY(180deg);
-    padding: 20px;
-    text-align: center;
-  }
-  .front .symbol { font-size: 56px; margin-bottom: 12px; }
-  .front .name { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
-  .front .orientation {
+    gap: 10px;
+    margin-bottom: 18px;
     font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
   }
+  .stat-pill {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stat-pill .num { font-weight: 700; color: #d4b8ff; }
+
+  .stage { width: 200px; height: 320px; perspective: 1200px; margin-bottom: 18px; }
+  .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1); cursor: pointer; }
+  .card.flipped { transform: rotateY(180deg); }
+  .face { position: absolute; width: 100%; height: 100%; border-radius: 16px;
+    backface-visibility: hidden; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.15); }
+  .back { background: linear-gradient(135deg, #2d1b4e, #4a2c6e); font-size: 60px; }
+  .back::after { content: "✦"; color: rgba(255,255,255,0.3); font-size: 90px; position: absolute; }
+  .front { background: linear-gradient(160deg, #2a1f4a, #1a1230); transform: rotateY(180deg);
+    padding: 18px; text-align: center; }
+  .front .symbol { font-size: 50px; margin-bottom: 10px; }
+  .front .name { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .front .orientation { font-size: 12px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; }
   .orientation.upright { background: rgba(120,220,150,0.2); color: #8ee6a8; }
   .orientation.reversed { background: rgba(220,120,120,0.2); color: #e69898; }
-  .front .desc { font-size: 13px; line-height: 1.6; color: #d8c8f0; }
+  .front .desc { font-size: 12px; line-height: 1.5; color: #d8c8f0; }
 
-  button {
-    background: linear-gradient(135deg, #6b3fa0, #9d5fc9);
-    color: #fff;
-    border: none;
-    padding: 14px 36px;
-    font-size: 15px;
-    border-radius: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(155,80,200,0.4);
-    transition: transform 0.15s;
-  }
+  .btn-row { display: flex; gap: 10px; }
+  button { background: linear-gradient(135deg, #6b3fa0, #9d5fc9); color: #fff; border: none;
+    padding: 13px 28px; font-size: 14px; border-radius: 24px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(155,80,200,0.4); transition: transform 0.15s; }
   button:active { transform: scale(0.96); }
-  button:disabled { opacity: 0.5; }
+  button:disabled { opacity: 0.4; box-shadow: none; }
+  .btn-secondary { background: rgba(255,255,255,0.08); box-shadow: none;
+    border: 1px solid rgba(255,255,255,0.15); }
 
-  .result-detail {
-    margin-top: 24px;
-    max-width: 320px;
-    text-align: center;
-    background: rgba(255,255,255,0.05);
-    border-radius: 14px;
-    padding: 16px 20px;
-    display: none;
-  }
+  .result-detail { margin-top: 20px; max-width: 300px; text-align: center;
+    background: rgba(255,255,255,0.05); border-radius: 14px; padding: 14px 18px; display: none; }
   .result-detail.show { display: block; }
-  .result-detail h3 { font-size: 15px; margin-bottom: 8px; color: #c9a8f0; }
-  .result-detail p { font-size: 13px; line-height: 1.7; color: #e0d4f0; margin-bottom: 6px; }
+  .result-detail h3 { font-size: 14px; margin-bottom: 6px; color: #c9a8f0; }
+  .result-detail p { font-size: 12px; line-height: 1.6; color: #e0d4f0; }
 
-  .ad-slot {
-    width: 100%;
-    max-width: 320px;
-    margin-top: 32px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px dashed rgba(255,255,255,0.15);
-    text-align: center;
-    font-size: 11px;
-    color: rgba(255,255,255,0.25);
-  }
-  footer {
-    margin-top: 30px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    text-align: center;
-  }
+  .limit-msg { margin-top: 16px; font-size: 13px; color: #e6c8a8; text-align: center;
+    max-width: 280px; line-height: 1.6; }
+
+  .history-toggle { margin-top: 22px; font-size: 12px; color: #b8a8d8; text-decoration: underline;
+    background: none; border: none; padding: 0; box-shadow: none; }
+  .history-list { margin-top: 12px; max-width: 320px; width: 100%; display: none; }
+  .history-list.show { display: block; }
+  .history-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.04);
+    border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 12px; }
+  .history-item .h-symbol { font-size: 18px; }
+  .history-item .h-name { flex: 1; color: #d8c8f0; }
+  .history-item .h-time { color: rgba(255,255,255,0.3); font-size: 10px; }
+
+  .ad-slot { width: 100%; max-width: 320px; margin-top: 26px; padding: 12px; border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,0.15); text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); }
+  footer { margin-top: 24px; font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; }
+
+  /* 分享卡片(用于生成图片) 隐藏在画面外 */
+  #shareCanvas { position: fixed; top: -9999px; left: -9999px; }
 </style>
 </head>
 <body>
 
 <h1>🔮 每日塔罗</h1>
 <div class="subtitle">静下心来，想一个问题，然后抽一张牌</div>
+
+<div class="stats-bar">
+  <div class="stat-pill">🔥 连续打卡 <span class="num" id="streakNum">0</span> 天</div>
+  <div class="stat-pill">🎴 今日剩余 <span class="num" id="remainNum">5</span> 次</div>
+</div>
 
 <div class="stage">
   <div class="card" id="card">
@@ -146,16 +112,29 @@
   </div>
 </div>
 
-<button id="drawBtn">抽一张牌</button>
+<div class="btn-row">
+  <button id="drawBtn">抽一张牌</button>
+  <button id="shareBtn" class="btn-secondary" style="display:none;">分享这张牌</button>
+</div>
+
+<div class="limit-msg" id="limitMsg" style="display:none;">
+  今天的次数用完啦，明天再来吧 ✨<br>记得回来维持你的连续打卡哦
+</div>
 
 <div class="result-detail" id="detail">
   <h3 id="detailTitle"></h3>
   <p id="detailText"></p>
 </div>
 
+<button class="history-toggle" id="historyToggle">查看历史记录 ▾</button>
+<div class="history-list" id="historyList"></div>
+
 <div class="ad-slot">广告位 · Ad Placeholder</div>
 
 <footer>每日塔罗 · 仅供娱乐参考，不构成任何决策依据</footer>
+
+<!-- 用于生成分享图片的隐藏canvas -->
+<canvas id="shareCanvas" width="600" height="800"></canvas>
 
 <script>
 const cards = [
@@ -183,12 +162,79 @@ const cards = [
   {name:"世界", symbol:"🌍", up:"完成与圆满，一个阶段画上了圆满的句号。", rev:"还差最后一步，不要在终点前放弃。"},
 ];
 
+const DAILY_LIMIT = 5;
+const STORAGE_KEY = "tarot_state_v1";
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+}
+
+function loadState() {
+  let raw = localStorage.getItem(STORAGE_KEY);
+  let state = raw ? JSON.parse(raw) : { lastDate: "", drawsToday: 0, streak: 0, history: [] };
+  const today = todayStr();
+  if (state.lastDate !== today) {
+    // 检查是否是连续的一天(简单处理:只要不是今天就重置抽数,打卡逻辑在抽牌时判断)
+    state.drawsToday = 0;
+  }
+  return state;
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
 let isFlipped = false;
+let currentPick = null;
+let currentReversed = false;
+
+function updateStatsBar() {
+  document.getElementById('streakNum').textContent = state.streak;
+  document.getElementById('remainNum').textContent = Math.max(0, DAILY_LIMIT - state.drawsToday);
+  const btn = document.getElementById('drawBtn');
+  const limitMsg = document.getElementById('limitMsg');
+  if (state.drawsToday >= DAILY_LIMIT) {
+    btn.disabled = true;
+    limitMsg.style.display = 'block';
+  } else {
+    btn.disabled = false;
+    limitMsg.style.display = 'none';
+  }
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (state.history.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:12px;">还没有抽牌记录</div>';
+    return;
+  }
+  list.innerHTML = state.history.slice().reverse().slice(0, 30).map(h => `
+    <div class="history-item">
+      <span class="h-symbol">${h.symbol}</span>
+      <span class="h-name">${h.name}（${h.reversed ? '逆位' : '正位'}）</span>
+      <span class="h-time">${h.time}</span>
+    </div>
+  `).join('');
+}
+
+document.getElementById('historyToggle').addEventListener('click', () => {
+  const list = document.getElementById('historyList');
+  const toggle = document.getElementById('historyToggle');
+  list.classList.toggle('show');
+  toggle.textContent = list.classList.contains('show') ? '收起历史记录 ▴' : '查看历史记录 ▾';
+  if (list.classList.contains('show')) renderHistory();
+});
 
 document.getElementById('drawBtn').addEventListener('click', drawCard);
-document.getElementById('card').addEventListener('click', drawCard);
+document.getElementById('card').addEventListener('click', () => {
+  if (!isFlipped && state.drawsToday < DAILY_LIMIT) drawCard();
+});
+document.getElementById('shareBtn').addEventListener('click', generateShareImage);
 
 function drawCard() {
+  if (state.drawsToday >= DAILY_LIMIT) return;
   const card = document.getElementById('card');
   const btn = document.getElementById('drawBtn');
   btn.disabled = true;
@@ -197,10 +243,10 @@ function drawCard() {
     card.classList.remove('flipped');
     isFlipped = false;
     document.getElementById('detail').classList.remove('show');
-    setTimeout(() => { showNewCard(); btn.disabled = false; }, 350);
+    document.getElementById('shareBtn').style.display = 'none';
+    setTimeout(() => { showNewCard(); }, 350);
   } else {
     showNewCard();
-    setTimeout(() => { btn.disabled = false; }, 700);
   }
 }
 
@@ -208,6 +254,8 @@ function showNewCard() {
   const card = document.getElementById('card');
   const pick = cards[Math.floor(Math.random() * cards.length)];
   const reversed = Math.random() < 0.5;
+  currentPick = pick;
+  currentReversed = reversed;
 
   document.getElementById('symbol').textContent = pick.symbol;
   document.getElementById('cardName').textContent = pick.name + (reversed ? "（逆位）" : "（正位）");
@@ -218,12 +266,112 @@ function showNewCard() {
   document.getElementById('detailTitle').textContent = pick.name + " · " + (reversed ? "逆位解读" : "正位解读");
   document.getElementById('detailText').textContent = reversed ? pick.rev : pick.up;
 
+  // 更新打卡和次数
+  const today = todayStr();
+  if (state.lastDate !== today) {
+    // 判断是否连续(昨天有抽过)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
+    if (state.lastDate === yStr) {
+      state.streak += 1;
+    } else {
+      state.streak = 1;
+    }
+    state.lastDate = today;
+    state.drawsToday = 0;
+  }
+  state.drawsToday += 1;
+  state.history.push({
+    name: pick.name, symbol: pick.symbol, reversed: reversed,
+    time: new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'})
+  });
+  saveState(state);
+  updateStatsBar();
+
   requestAnimationFrame(() => {
     card.classList.add('flipped');
     isFlipped = true;
-    setTimeout(() => document.getElementById('detail').classList.add('show'), 300);
+    setTimeout(() => {
+      document.getElementById('detail').classList.add('show');
+      document.getElementById('shareBtn').style.display = 'inline-block';
+      document.getElementById('drawBtn').disabled = state.drawsToday >= DAILY_LIMIT;
+    }, 300);
   });
 }
+
+function generateShareImage() {
+  if (!currentPick) return;
+  const canvas = document.getElementById('shareCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // 背景
+  const grad = ctx.createLinearGradient(0, 0, 0, 800);
+  grad.addColorStop(0, '#1a1033');
+  grad.addColorStop(1, '#0a0618');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 600, 800);
+
+  // 卡片框
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(60, 140, 480, 520);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f0e6ff';
+  ctx.font = '32px sans-serif';
+  ctx.fillText('🔮 每日塔罗', 300, 80);
+
+  ctx.font = '90px sans-serif';
+  ctx.fillText(currentPick.symbol, 300, 320);
+
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(currentPick.name + (currentReversed ? '（逆位）' : '（正位）'), 300, 400);
+
+  ctx.font = '20px sans-serif';
+  ctx.fillStyle = currentReversed ? '#e69898' : '#8ee6a8';
+  ctx.fillText(currentReversed ? '逆位' : '正位', 300, 440);
+
+  ctx.font = '18px sans-serif';
+  ctx.fillStyle = '#d8c8f0';
+  const text = currentReversed ? currentPick.rev : currentPick.up;
+  wrapText(ctx, text, 300, 500, 380, 30);
+
+  ctx.font = '14px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillText('扫码或访问网站，抽一张属于你的牌', 300, 720);
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = currentPick.name + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  let chars = text.split('');
+  let line = '';
+  let lines = [];
+  for (let c of chars) {
+    const testLine = line + c;
+    if (ctx.measureText(testLine).width > maxWidth && line !== '') {
+      lines.push(line);
+      line = c;
+    } else {
+      line = testLine;
+    }
+  }
+  lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+}
+
+// 初始化
+updateStatsBar();
 </script>
 
 </body>
