@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日塔罗 · 抽一张牌</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(circle at top, #1a1033, #0a0618 70%);
+    color: #f0e6ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #b8a8d8;
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  .stage {
+    width: 220px;
+    height: 360px;
+    perspective: 1200px;
+    margin-bottom: 24px;
+  }
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .back {
+    background: linear-gradient(135deg, #2d1b4e, #4a2c6e);
+    font-size: 60px;
+  }
+  .back::after {
+    content: "✦";
+    color: rgba(255,255,255,0.3);
+    font-size: 100px;
+    position: absolute;
+  }
+  .front {
+    background: linear-gradient(160deg, #2a1f4a, #1a1230);
+    transform: rotateY(180deg);
+    padding: 20px;
+    text-align: center;
+  }
+  .front .symbol { font-size: 56px; margin-bottom: 12px; }
+  .front .name { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
+  .front .orientation {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .orientation.upright { background: rgba(120,220,150,0.2); color: #8ee6a8; }
+  .orientation.reversed { background: rgba(220,120,120,0.2); color: #e69898; }
+  .front .desc { font-size: 13px; line-height: 1.6; color: #d8c8f0; }
+
+  button {
+    background: linear-gradient(135deg, #6b3fa0, #9d5fc9);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    font-size: 15px;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(155,80,200,0.4);
+    transition: transform 0.15s;
+  }
+  button:active { transform: scale(0.96); }
+  button:disabled { opacity: 0.5; }
+
+  .result-detail {
+    margin-top: 24px;
+    max-width: 320px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: none;
+  }
+  .result-detail.show { display: block; }
+  .result-detail h3 { font-size: 15px; margin-bottom: 8px; color: #c9a8f0; }
+  .result-detail p { font-size: 13px; line-height: 1.7; color: #e0d4f0; margin-bottom: 6px; }
+
+  .ad-slot {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 32px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,0.15);
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>🔮 每日塔罗</h1>
+<div class="subtitle">静下心来，想一个问题，然后抽一张牌</div>
+
+<div class="stage">
+  <div class="card" id="card">
+    <div class="face back"></div>
+    <div class="face front">
+      <div class="symbol" id="symbol"></div>
+      <div class="name" id="cardName"></div>
+      <div class="orientation" id="orientation"></div>
+    </div>
+  </div>
+</div>
+
+<button id="drawBtn">抽一张牌</button>
+
+<div class="result-detail" id="detail">
+  <h3 id="detailTitle"></h3>
+  <p id="detailText"></p>
+</div>
+
+<div class="ad-slot">广告位 · Ad Placeholder</div>
+
+<footer>每日塔罗 · 仅供娱乐参考，不构成任何决策依据</footer>
+
+<script>
+const cards = [
+  {name:"愚者", symbol:"🃏", up:"新的开始，自由与冒险精神，对未知保持好奇与信任。", rev:"鲁莽冲动，缺乏计划，做事前最好再想清楚一点。"},
+  {name:"魔术师", symbol:"🎩", up:"创造力被激活，你拥有实现目标的资源和能力。", rev:"能力被错用或拖延，注意是否在自我欺骗。"},
+  {name:"女祭司", symbol:"🌙", up:"直觉敏锐，倾听内心的声音比向外寻求答案更重要。", rev:"信息被隐瞒或自我忽视了真实感受，多观察少行动。"},
+  {name:"女皇", symbol:"🌸", up:"丰盛、滋养与创造力，关系或项目正在自然生长。", rev:"过度付出或停滞不前，记得也要照顾自己。"},
+  {name:"皇帝", symbol:"👑", up:"秩序与掌控，是时候建立规则、稳住局面了。", rev:"过于强硬或失控，权威受到挑战，需要弹性应对。"},
+  {name:"教皇", symbol:"📿", up:"传统、规则与指导，遵循既有的路径会比较稳妥。", rev:"教条束缚，是时候打破常规、走自己的路。"},
+  {name:"恋人", symbol:"💞", up:"和谐的关系或重要的选择，价值观一致带来力量。", rev:"关系失衡或选择困难，先理清自己真正想要什么。"},
+  {name:"战车", symbol:"🏆", up:"凭借意志力和决心，你能在竞争中胜出。", rev:"方向失控或动力不足，先停下来调整再前进。"},
+  {name:"力量", symbol:"🦁", up:"内在的勇气与温和并存，用耐心而非强硬解决问题。", rev:"信心不足或自我怀疑，提醒自己曾经拥有的力量。"},
+  {name:"隐士", symbol:"🏮", up:"需要独处和反思的时刻，答案在内心而非外界。", rev:"过度孤立，适当走出来与人交流会有帮助。"},
+  {name:"命运之轮", symbol:"🎡", up:"变化正在发生，顺势而为会比抗拒更有利。", rev:"运势起伏带来不安，提醒自己周期总会过去。"},
+  {name:"正义", symbol:"⚖️", up:"公平与因果，诚实面对事实会带来好的结果。", rev:"不公或失衡的判断，重新审视是否有偏见。"},
+  {name:"倒吊人", symbol:"🙃", up:"换个角度看问题，暂停行动反而能看清全局。", rev:"停滞太久带来焦虑，是时候做出改变了。"},
+  {name:"死神", symbol:"🦋", up:"一个阶段结束，为新的开始让出空间，不必恐惧。", rev:"抗拒改变，紧抓不放反而让自己更辛苦。"},
+  {name:"节制", symbol:"⚗️", up:"平衡与耐心，循序渐进会比急于求成更有效。", rev:"过度或不足，生活的某个方面失去了平衡。"},
+  {name:"恶魔", symbol:"⛓️", up:"被欲望或习惯所困，先看清楚束缚自己的到底是什么。", rev:"开始挣脱束缚，自由就在迈出那一步之后。"},
+  {name:"塔", symbol:"⚡", up:"突如其来的变动打破旧有结构，混乱中藏着新生。", rev:"恐惧带来的逃避，延迟面对只会让冲击更大。"},
+  {name:"星星", symbol:"⭐", up:"希望与疗愈，经历低谷后正在慢慢恢复信心。", rev:"信心不足或方向迷失，给自己多一点耐心。"},
+  {name:"月亮", symbol:"🌕", up:"潜意识与直觉活跃，事情可能不全是表面看到的样子。", rev:"困惑逐渐被澄清，真相即将浮出水面。"},
+  {name:"太阳", symbol:"☀️", up:"成功、活力与喜悦，整体能量非常积极正向。", rev:"暂时的乌云遮蔽了光芒，但阳光很快会回来。"},
+  {name:"审判", symbol:"📯", up:"重新评估与觉醒，过去的经历正在召唤新的决定。", rev:"自我批判过重，对自己宽容一点会更有力量。"},
+  {name:"世界", symbol:"🌍", up:"完成与圆满，一个阶段画上了圆满的句号。", rev:"还差最后一步，不要在终点前放弃。"},
+];
+
+let isFlipped = false;
+
+document.getElementById('drawBtn').addEventListener('click', drawCard);
+document.getElementById('card').addEventListener('click', drawCard);
+
+function drawCard() {
+  const card = document.getElementById('card');
+  const btn = document.getElementById('drawBtn');
+  btn.disabled = true;
+
+  if (isFlipped) {
+    card.classList.remove('flipped');
+    isFlipped = false;
+    document.getElementById('detail').classList.remove('show');
+    setTimeout(() => { showNewCard(); btn.disabled = false; }, 350);
+  } else {
+    showNewCard();
+    setTimeout(() => { btn.disabled = false; }, 700);
+  }
+}
+
+function showNewCard() {
+  const card = document.getElementById('card');
+  const pick = cards[Math.floor(Math.random() * cards.length)];
+  const reversed = Math.random() < 0.5;
+
+  document.getElementById('symbol').textContent = pick.symbol;
+  document.getElementById('cardName').textContent = pick.name + (reversed ? "（逆位）" : "（正位）");
+  const orientEl = document.getElementById('orientation');
+  orientEl.textContent = reversed ? "逆位" : "正位";
+  orientEl.className = "orientation " + (reversed ? "reversed" : "upright");
+
+  document.getElementById('detailTitle').textContent = pick.name + " · " + (reversed ? "逆位解读" : "正位解读");
+  document.getElementById('detailText').textContent = reversed ? pick.rev : pick.up;
+
+  requestAnimationFrame(() => {
+    card.classList.add('flipped');
+    isFlipped = true;
+    setTimeout(() => document.getElementById('detail').classList.add('show'), 300);
+  });
+}
+</script>
+
+</body>
+</html>
