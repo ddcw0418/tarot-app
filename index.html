@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日塔罗 · 抽一张牌</title>
+<title>Daily Tarot · Draw Your Card</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     background: radial-gradient(circle at top, #1a1033, #0a0618 70%);
     color: #f0e6ff;
     min-height: 100vh;
@@ -16,27 +16,15 @@
     align-items: center;
     padding: 20px 16px 50px;
   }
-  h1 { font-size: 22px; font-weight: 600; letter-spacing: 2px; }
-  .subtitle { font-size: 13px; color: #b8a8d8; margin: 4px 0 14px; text-align: center; }
+  h1 { font-size: 22px; font-weight: 600; letter-spacing: 1px; }
+  .subtitle { font-size: 13px; color: #b8a8d8; margin: 4px 0 14px; text-align: center; max-width: 280px; }
 
-  .stats-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
-    font-size: 12px;
-  }
-  .stat-pill {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 6px 14px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
+  .stats-bar { display: flex; gap: 10px; margin-bottom: 18px; font-size: 12px; }
+  .stat-pill { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 6px 14px; display: flex; align-items: center; gap: 5px; }
   .stat-pill .num { font-weight: 700; color: #d4b8ff; }
 
-  .stage { width: 200px; height: 320px; perspective: 1200px; margin-bottom: 18px; }
+  .stage { width: 210px; height: 330px; perspective: 1200px; margin-bottom: 18px; }
   .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
     transition: transform 0.7s cubic-bezier(.4,.2,.2,1); cursor: pointer; }
   .card.flipped { transform: rotateY(180deg); }
@@ -47,31 +35,47 @@
   .back { background: linear-gradient(135deg, #2d1b4e, #4a2c6e); font-size: 60px; }
   .back::after { content: "✦"; color: rgba(255,255,255,0.3); font-size: 90px; position: absolute; }
   .front { background: linear-gradient(160deg, #2a1f4a, #1a1230); transform: rotateY(180deg);
-    padding: 18px; text-align: center; }
-  .front .symbol { font-size: 50px; margin-bottom: 10px; }
-  .front .name { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
-  .front .orientation { font-size: 12px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; }
+    padding: 16px; text-align: center; }
+  .front .symbol { font-size: 46px; margin-bottom: 8px; }
+  .front .name { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .front .orientation { font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 8px; }
   .orientation.upright { background: rgba(120,220,150,0.2); color: #8ee6a8; }
   .orientation.reversed { background: rgba(220,120,120,0.2); color: #e69898; }
-  .front .desc { font-size: 12px; line-height: 1.5; color: #d8c8f0; }
+  .front .desc { font-size: 11px; line-height: 1.45; color: #d8c8f0; }
 
   .btn-row { display: flex; gap: 10px; }
   button { background: linear-gradient(135deg, #6b3fa0, #9d5fc9); color: #fff; border: none;
-    padding: 13px 28px; font-size: 14px; border-radius: 24px; cursor: pointer;
+    padding: 13px 26px; font-size: 14px; border-radius: 24px; cursor: pointer;
     box-shadow: 0 4px 16px rgba(155,80,200,0.4); transition: transform 0.15s; }
   button:active { transform: scale(0.96); }
   button:disabled { opacity: 0.4; box-shadow: none; }
   .btn-secondary { background: rgba(255,255,255,0.08); box-shadow: none;
     border: 1px solid rgba(255,255,255,0.15); }
 
-  .result-detail { margin-top: 20px; max-width: 300px; text-align: center;
-    background: rgba(255,255,255,0.05); border-radius: 14px; padding: 14px 18px; display: none; }
+  .result-detail { margin-top: 20px; max-width: 340px; text-align: center;
+    background: rgba(255,255,255,0.05); border-radius: 14px; padding: 16px 20px; display: none; }
   .result-detail.show { display: block; }
-  .result-detail h3 { font-size: 14px; margin-bottom: 6px; color: #c9a8f0; }
-  .result-detail p { font-size: 12px; line-height: 1.6; color: #e0d4f0; }
+  .result-detail h3 { font-size: 14px; margin-bottom: 8px; color: #c9a8f0; }
+  .result-detail p { font-size: 13px; line-height: 1.7; color: #e0d4f0; margin-bottom: 10px; }
+  .result-detail .advice-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: #b89ad8; margin-bottom: 4px; }
+  .result-detail .advice-text { font-size: 13px; line-height: 1.7; color: #f0d8b8; }
 
   .limit-msg { margin-top: 16px; font-size: 13px; color: #e6c8a8; text-align: center;
     max-width: 280px; line-height: 1.6; }
+
+  .summary-box { margin-top: 22px; max-width: 340px; background: linear-gradient(160deg, rgba(155,80,200,0.18), rgba(80,40,130,0.12));
+    border: 1px solid rgba(200,160,255,0.25); border-radius: 16px; padding: 20px; display: none; }
+  .summary-box.show { display: block; }
+  .summary-box h3 { font-size: 15px; color: #e0c8ff; margin-bottom: 10px; text-align: center; }
+  .summary-box .summary-cards { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
+  .summary-box .summary-cards span { font-size: 20px; }
+  .summary-box p { font-size: 13px; line-height: 1.75; color: #e8dcf5; margin-bottom: 10px; }
+  .summary-box .summary-tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 10px;
+    margin-bottom: 10px; }
+  .tag-positive { background: rgba(120,220,150,0.2); color: #8ee6a8; }
+  .tag-mixed { background: rgba(230,200,140,0.2); color: #e6c88e; }
+  .tag-challenging { background: rgba(220,120,120,0.2); color: #e69898; }
 
   .history-toggle { margin-top: 22px; font-size: 12px; color: #b8a8d8; text-decoration: underline;
     background: none; border: none; padding: 0; box-shadow: none; }
@@ -85,20 +89,19 @@
 
   .ad-slot { width: 100%; max-width: 320px; margin-top: 26px; padding: 12px; border-radius: 10px;
     border: 1px dashed rgba(255,255,255,0.15); text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); }
-  footer { margin-top: 24px; font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; }
+  footer { margin-top: 24px; font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; max-width: 320px; }
 
-  /* 分享卡片(用于生成图片) 隐藏在画面外 */
   #shareCanvas { position: fixed; top: -9999px; left: -9999px; }
 </style>
 </head>
 <body>
 
-<h1>🔮 每日塔罗</h1>
-<div class="subtitle">静下心来，想一个问题，然后抽一张牌</div>
+<h1>🔮 Daily Tarot</h1>
+<div class="subtitle">Take a breath, hold a question in mind, and draw a card.</div>
 
 <div class="stats-bar">
-  <div class="stat-pill">🔥 连续打卡 <span class="num" id="streakNum">0</span> 天</div>
-  <div class="stat-pill">🎴 今日剩余 <span class="num" id="remainNum">5</span> 次</div>
+  <div class="stat-pill">🔥 Streak <span class="num" id="streakNum">0</span> days</div>
+  <div class="stat-pill">🎴 Left today <span class="num" id="remainNum">5</span></div>
 </div>
 
 <div class="stage">
@@ -113,57 +116,153 @@
 </div>
 
 <div class="btn-row">
-  <button id="drawBtn">抽一张牌</button>
-  <button id="shareBtn" class="btn-secondary" style="display:none;">分享这张牌</button>
+  <button id="drawBtn">Draw a Card</button>
+  <button id="shareBtn" class="btn-secondary" style="display:none;">Share this card</button>
 </div>
 
 <div class="limit-msg" id="limitMsg" style="display:none;">
-  今天的次数用完啦，明天再来吧 ✨<br>记得回来维持你的连续打卡哦
+  You've used today's draws. Come back tomorrow ✨<br>Keep your streak going!
 </div>
 
 <div class="result-detail" id="detail">
   <h3 id="detailTitle"></h3>
   <p id="detailText"></p>
+  <div class="advice-label">What to do</div>
+  <div class="advice-text" id="adviceText"></div>
 </div>
 
-<button class="history-toggle" id="historyToggle">查看历史记录 ▾</button>
+<div class="summary-box" id="summaryBox">
+  <h3>Today's Reading — Overall Picture</h3>
+  <div class="summary-cards" id="summaryCards"></div>
+  <div style="text-align:center;"><span class="summary-tag" id="summaryTag"></span></div>
+  <p id="summaryText"></p>
+</div>
+
+<button class="history-toggle" id="historyToggle">View history ▾</button>
 <div class="history-list" id="historyList"></div>
 
-<div class="ad-slot">广告位 · Ad Placeholder</div>
+<div class="ad-slot">Ad Placeholder</div>
 
-<footer>每日塔罗 · 仅供娱乐参考，不构成任何决策依据</footer>
+<footer>Daily Tarot · For entertainment and reflection only, not a substitute for professional advice.</footer>
 
-<!-- 用于生成分享图片的隐藏canvas -->
 <canvas id="shareCanvas" width="600" height="800"></canvas>
 
 <script>
 const cards = [
-  {name:"愚者", symbol:"🃏", up:"新的开始，自由与冒险精神，对未知保持好奇与信任。", rev:"鲁莽冲动，缺乏计划，做事前最好再想清楚一点。"},
-  {name:"魔术师", symbol:"🎩", up:"创造力被激活，你拥有实现目标的资源和能力。", rev:"能力被错用或拖延，注意是否在自我欺骗。"},
-  {name:"女祭司", symbol:"🌙", up:"直觉敏锐，倾听内心的声音比向外寻求答案更重要。", rev:"信息被隐瞒或自我忽视了真实感受，多观察少行动。"},
-  {name:"女皇", symbol:"🌸", up:"丰盛、滋养与创造力，关系或项目正在自然生长。", rev:"过度付出或停滞不前，记得也要照顾自己。"},
-  {name:"皇帝", symbol:"👑", up:"秩序与掌控，是时候建立规则、稳住局面了。", rev:"过于强硬或失控，权威受到挑战，需要弹性应对。"},
-  {name:"教皇", symbol:"📿", up:"传统、规则与指导，遵循既有的路径会比较稳妥。", rev:"教条束缚，是时候打破常规、走自己的路。"},
-  {name:"恋人", symbol:"💞", up:"和谐的关系或重要的选择，价值观一致带来力量。", rev:"关系失衡或选择困难，先理清自己真正想要什么。"},
-  {name:"战车", symbol:"🏆", up:"凭借意志力和决心，你能在竞争中胜出。", rev:"方向失控或动力不足，先停下来调整再前进。"},
-  {name:"力量", symbol:"🦁", up:"内在的勇气与温和并存，用耐心而非强硬解决问题。", rev:"信心不足或自我怀疑，提醒自己曾经拥有的力量。"},
-  {name:"隐士", symbol:"🏮", up:"需要独处和反思的时刻，答案在内心而非外界。", rev:"过度孤立，适当走出来与人交流会有帮助。"},
-  {name:"命运之轮", symbol:"🎡", up:"变化正在发生，顺势而为会比抗拒更有利。", rev:"运势起伏带来不安，提醒自己周期总会过去。"},
-  {name:"正义", symbol:"⚖️", up:"公平与因果，诚实面对事实会带来好的结果。", rev:"不公或失衡的判断，重新审视是否有偏见。"},
-  {name:"倒吊人", symbol:"🙃", up:"换个角度看问题，暂停行动反而能看清全局。", rev:"停滞太久带来焦虑，是时候做出改变了。"},
-  {name:"死神", symbol:"🦋", up:"一个阶段结束，为新的开始让出空间，不必恐惧。", rev:"抗拒改变，紧抓不放反而让自己更辛苦。"},
-  {name:"节制", symbol:"⚗️", up:"平衡与耐心，循序渐进会比急于求成更有效。", rev:"过度或不足，生活的某个方面失去了平衡。"},
-  {name:"恶魔", symbol:"⛓️", up:"被欲望或习惯所困，先看清楚束缚自己的到底是什么。", rev:"开始挣脱束缚，自由就在迈出那一步之后。"},
-  {name:"塔", symbol:"⚡", up:"突如其来的变动打破旧有结构，混乱中藏着新生。", rev:"恐惧带来的逃避，延迟面对只会让冲击更大。"},
-  {name:"星星", symbol:"⭐", up:"希望与疗愈，经历低谷后正在慢慢恢复信心。", rev:"信心不足或方向迷失，给自己多一点耐心。"},
-  {name:"月亮", symbol:"🌕", up:"潜意识与直觉活跃，事情可能不全是表面看到的样子。", rev:"困惑逐渐被澄清，真相即将浮出水面。"},
-  {name:"太阳", symbol:"☀️", up:"成功、活力与喜悦，整体能量非常积极正向。", rev:"暂时的乌云遮蔽了光芒，但阳光很快会回来。"},
-  {name:"审判", symbol:"📯", up:"重新评估与觉醒，过去的经历正在召唤新的决定。", rev:"自我批判过重，对自己宽容一点会更有力量。"},
-  {name:"世界", symbol:"🌍", up:"完成与圆满，一个阶段画上了圆满的句号。", rev:"还差最后一步，不要在终点前放弃。"},
+  {name:"The Fool", symbol:"🃏",
+    up:"A fresh start is calling. You're stepping into the unknown with a light heart and open mind — trust the leap, even without a guaranteed outcome. Curiosity and spontaneity are your allies right now, not weaknesses.",
+    upAdvice:"Take the first small step today, even an imperfect one. Don't wait for a complete plan before you begin — momentum will teach you more than overthinking will.",
+    rev:"Recklessness or naivety may be working against you. Before jumping into something new, slow down and check whether you've actually thought it through, or if you're avoiding a harder decision.",
+    revAdvice:"Pause for 24 hours before committing to anything big. Write down what you're actually afraid of facing — that's usually the real decision hiding underneath."},
+  {name:"The Magician", symbol:"🎩",
+    up:"You have every tool you need to manifest what you want — skill, willpower, and resources are aligned. This is a moment of action: stop preparing and start creating, the conditions are right.",
+    upAdvice:"Pick the one task you've been postponing and finish it this week. You already have what's required — the missing piece is simply starting.",
+    rev:"Talent is being misused, manipulated, or left untapped. Watch for self-deception or someone using charm to mislead you — including yourself.",
+    revAdvice:"Double-check any deal, promise, or plan that feels too smooth right now. If something is being oversold to you, ask one more pointed question before agreeing."},
+  {name:"The High Priestess", symbol:"🌙",
+    up:"Your intuition is sharper than your logic right now. Listen to what your gut is telling you before seeking outside answers — some things aren't meant to be fully explained yet, only sensed.",
+    upAdvice:"Before asking others for advice on this, sit quietly for ten minutes and notice what your own first instinct already told you.",
+    rev:"You may be ignoring your own instincts, or secrets and hidden information are clouding the situation. Step back and observe more before reacting.",
+    revAdvice:"Don't make the decision today. Gather a bit more information first, especially anything that's currently being kept from you."},
+  {name:"The Empress", symbol:"🌸",
+    up:"Abundance, nurturing, and creative growth surround you. Whatever you've been tending — a relationship, a project, an idea — is ready to flourish if you keep caring for it patiently.",
+    upAdvice:"Keep doing what you're doing, just a little more consistently. This is a growth phase, not a moment that needs a dramatic new move.",
+    rev:"You may be over-giving to others while neglecting yourself, or creative energy feels blocked. This is a reminder that nurturing starts with you.",
+    revAdvice:"Block out time this week purely for yourself, with no obligation attached. You can't keep pouring from an empty cup."},
+  {name:"The Emperor", symbol:"👑",
+    up:"Structure, discipline, and clear authority are what the moment calls for. Set firm boundaries, build a plan, and take ownership — stability comes from the order you create.",
+    upAdvice:"Write down one clear rule or boundary you'll hold yourself to this week, and actually follow through on it without exceptions.",
+    rev:"Rigidity or controlling behavior is causing friction, or your sense of authority feels shaken. Loosen your grip slightly and allow more flexibility into the situation.",
+    revAdvice:"Pick one thing you're currently trying to control and consciously let it go for a few days. Notice what actually happens."},
+  {name:"The Hierophant", symbol:"📿",
+    up:"Tradition, structure, and established wisdom serve you well right now. Following a proven path, a mentor, or a set of rules will keep you grounded and moving forward safely.",
+    upAdvice:"Find someone who has already solved the problem you're facing and ask how they did it, instead of improvising alone.",
+    rev:"Rigid dogma is holding you back from your own truth. It's time to question outdated rules and find your own way, even if it breaks convention.",
+    revAdvice:"Identify one rule you're following purely out of habit or pressure, and ask whether it still actually serves you."},
+  {name:"The Lovers", symbol:"💞",
+    up:"A meaningful connection or an important choice is in front of you. Harmony comes from shared values — when two paths (or people) align in what truly matters, the bond grows stronger.",
+    upAdvice:"Have an honest conversation about what you both actually want, rather than assuming you already know.",
+    rev:"A relationship feels out of balance, or you're struggling between two choices. Get clear on what you actually value before deciding anything.",
+    revAdvice:"List your non-negotiables on paper before making the choice. Decide from that list, not from pressure or guilt."},
+  {name:"The Chariot", symbol:"🏆",
+    up:"Willpower and focused determination will carry you through competition or conflict. Stay disciplined, keep your direction clear, and victory is within reach.",
+    upAdvice:"Set one specific, measurable goal for the next 7 days and protect the time to work on it daily, no matter what.",
+    rev:"You may feel like you're losing control or direction, pulled in two ways at once. Pause and realign before pushing forward again.",
+    revAdvice:"Stop and write down your actual destination before taking another step. Effort without direction will just exhaust you faster."},
+  {name:"Strength", symbol:"🦁",
+    up:"Quiet courage paired with patience and compassion is more powerful than force. You can handle this challenge calmly — gentleness is its own kind of strength.",
+    upAdvice:"Face the difficult conversation or task calmly rather than aggressively — your composure will be more persuasive than pressure.",
+    rev:"Self-doubt or insecurity is undermining your confidence. Remember a moment when you were genuinely strong — that capacity hasn't disappeared, it's just buried right now.",
+    revAdvice:"Write down one past moment where you handled something hard well. Reread it before you do the thing you're currently dreading."},
+  {name:"The Hermit", symbol:"🏮",
+    up:"This is a season for solitude and inner reflection. The answer you're searching for won't come from outside noise — it's waiting quietly within you.",
+    upAdvice:"Give yourself one full evening without input from social media or other people's opinions, and just think.",
+    rev:"Isolation has gone on too long and is starting to feel lonely rather than restorative. Reaching out to someone, even briefly, could help more than more alone time.",
+    revAdvice:"Message one person today, even briefly — isolation has crossed from helpful into draining."},
+  {name:"Wheel of Fortune", symbol:"🎡",
+    up:"Change is already in motion, and resisting it will only cause friction. Go with the momentum — this cycle is working in your favor if you let it.",
+    upAdvice:"Say yes to the opportunity in front of you instead of waiting for a 'better' one — timing is currently on your side.",
+    rev:"Bad luck or sudden setbacks feel destabilizing, but remember that every cycle turns. What feels stuck now will not stay this way forever.",
+    revAdvice:"Don't make a permanent decision based on a temporary low point. Give the situation one more cycle before judging it as final."},
+  {name:"Justice", symbol:"⚖️",
+    up:"Fairness and cause-and-effect are at play. Being honest — with others and yourself — will lead to a result that actually holds up over time.",
+    upAdvice:"If there's a truth you've been softening or avoiding saying out loud, say it plainly today — it will resolve faster than you expect.",
+    rev:"Something feels unfair, or a judgment (yours or someone else's) may be biased. Re-examine the situation for blind spots before deciding what's truly right.",
+    revAdvice:"Before reacting to what feels unfair, write out the other side's perspective in full, even if you disagree with it."},
+  {name:"The Hanged Man", symbol:"🙃",
+    up:"Pausing and looking at this from a completely different angle will reveal more than rushing to act. Sometimes the most productive thing is to do nothing — for now.",
+    upAdvice:"Deliberately delay your decision by 48 hours and spend that time looking at the problem from someone else's point of view.",
+    rev:"Staying stuck for too long has turned from a pause into avoidance. It's time to actually make the change you've been delaying.",
+    revAdvice:"Pick the smallest possible version of the change you've been avoiding, and do that one small piece today."},
+  {name:"Death", symbol:"🦋",
+    up:"One chapter is ending so a new one can begin. This isn't something to fear — endings make space for transformation, even when they're uncomfortable.",
+    upAdvice:"Actively close the chapter instead of letting it fade — say the goodbye, send the message, finish the task. Closure creates room for what's next.",
+    rev:"You're resisting a necessary change, holding on to something that has already run its course. Letting go, though hard, will bring relief.",
+    revAdvice:"Name out loud (or in writing) the one thing you know you need to let go of. Naming it is the first real step toward releasing it."},
+  {name:"Temperance", symbol:"⚗️",
+    up:"Balance and patience will serve you far better than urgency. Moving steadily, blending opposing forces calmly, leads to a more lasting result than rushing ever could.",
+    upAdvice:"Slow your pace deliberately this week — pick consistency over intensity, and avoid all-or-nothing decisions.",
+    rev:"Something in your life is out of balance — too much of one thing, not enough of another. Notice where moderation has slipped.",
+    revAdvice:"Identify the one area where you've gone to an extreme — too much work, too little rest, too much of someone's opinion — and pull it back toward center."},
+  {name:"The Devil", symbol:"⛓️",
+    up:"You may feel trapped by a habit, temptation, or unhealthy attachment. The first step to freedom is honestly naming exactly what's holding you back.",
+    upAdvice:"Write down, specifically, the habit or pattern that's controlling you right now. Clarity about it is more useful than guilt about it.",
+    rev:"You're beginning to break free from something that has limited you. Freedom is close — keep taking that next small step away from it.",
+    revAdvice:"Keep doing whatever you just did that created distance from the old pattern — repeat that exact action again today."},
+  {name:"The Tower", symbol:"⚡",
+    up:"A sudden, disruptive change is breaking down an old structure. It feels chaotic now, but what falls away was likely no longer serving you — something more honest can be rebuilt.",
+    upAdvice:"Don't rush to rebuild exactly what just fell apart. Take stock of what's actually solid before reconstructing anything.",
+    rev:"Fear of disaster is causing you to avoid a confrontation that needs to happen. Delaying it usually makes the eventual impact larger, not smaller.",
+    revAdvice:"Have the conversation or make the call you've been postponing out of fear — this week, not next month."},
+  {name:"The Star", symbol:"⭐",
+    up:"Hope and healing are returning after a difficult period. You're regaining clarity and faith in the future — let this gentle optimism guide your next steps.",
+    upAdvice:"Set one gentle, hopeful intention for the coming weeks and revisit it daily — this is a good season to plant something new.",
+    rev:"Confidence feels low, or you've lost sight of your direction. Be patient with yourself; the light hasn't gone out, it's just temporarily dim.",
+    revAdvice:"Lower the bar for what counts as progress today. A small, honest step still counts, even if it doesn't feel inspiring yet."},
+  {name:"The Moon", symbol:"🌕",
+    up:"Intuition and the subconscious are especially active right now. Things may not be exactly as they appear on the surface — trust your instincts over assumptions.",
+    upAdvice:"Hold off on taking anything at face value today. If something feels off, trust that signal even without full proof yet.",
+    rev:"Confusion is starting to clear, and the truth behind a situation is coming into focus. What felt murky will soon make more sense.",
+    revAdvice:"Keep paying attention — don't act yet. The clarity you need is close but not complete; a few more days will make the picture obvious."},
+  {name:"The Sun", symbol:"☀️",
+    up:"Success, vitality, and genuine joy are flowing strongly right now. This is one of the most positive cards in the deck — enjoy this bright stretch fully.",
+    upAdvice:"Use this high-energy window to push forward on the thing that matters most to you — momentum is genuinely on your side right now.",
+    rev:"A temporary cloud is dimming what should be a happy moment, but it won't last. The underlying energy is still good — give it a little more time.",
+    revAdvice:"Don't abandon something good just because today felt off. Give it a few more days before deciding the positive momentum is gone."},
+  {name:"Judgement", symbol:"📯",
+    up:"A moment of reckoning or awakening is calling you to reassess. Past experiences are surfacing for a reason — they're informing an important decision ahead.",
+    upAdvice:"Look back honestly at a past situation that's resurfacing in your mind, and ask what it's actually trying to teach you about your next move.",
+    rev:"Harsh self-judgment is weighing you down more than it's helping. Extend yourself the same compassion you'd offer someone else in your position.",
+    revAdvice:"Write down what you'd tell a friend in your exact situation, then say that same thing to yourself."},
+  {name:"The World", symbol:"🌍",
+    up:"Completion and fulfillment — a major cycle is closing in a satisfying way. Take a moment to actually acknowledge how far you've come.",
+    upAdvice:"Before jumping into the next goal, take a real moment to celebrate finishing this one — don't skip straight to the next thing.",
+    rev:"You're close to finishing something important but not quite there yet. Resist the urge to give up right before the finish line.",
+    revAdvice:"Identify the single smallest remaining task standing between you and completion, and finish just that one thing today."},
 ];
 
 const DAILY_LIMIT = 5;
-const STORAGE_KEY = "tarot_state_v1";
+const STORAGE_KEY = "tarot_state_en_v2";
 
 function todayStr() {
   const d = new Date();
@@ -172,18 +271,16 @@ function todayStr() {
 
 function loadState() {
   let raw = localStorage.getItem(STORAGE_KEY);
-  let state = raw ? JSON.parse(raw) : { lastDate: "", drawsToday: 0, streak: 0, history: [] };
+  let state = raw ? JSON.parse(raw) : { lastDate: "", drawsToday: 0, streak: 0, history: [], todaysDraws: [] };
   const today = todayStr();
   if (state.lastDate !== today) {
-    // 检查是否是连续的一天(简单处理:只要不是今天就重置抽数,打卡逻辑在抽牌时判断)
     state.drawsToday = 0;
+    state.todaysDraws = [];
   }
+  if (!state.todaysDraws) state.todaysDraws = [];
   return state;
 }
-
-function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+function saveState(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
 let state = loadState();
 let isFlipped = false;
@@ -207,13 +304,13 @@ function updateStatsBar() {
 function renderHistory() {
   const list = document.getElementById('historyList');
   if (state.history.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:12px;">还没有抽牌记录</div>';
+    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:12px;">No draws yet</div>';
     return;
   }
   list.innerHTML = state.history.slice().reverse().slice(0, 30).map(h => `
     <div class="history-item">
       <span class="h-symbol">${h.symbol}</span>
-      <span class="h-name">${h.name}（${h.reversed ? '逆位' : '正位'}）</span>
+      <span class="h-name">${h.name} (${h.reversed ? 'Reversed' : 'Upright'})</span>
       <span class="h-time">${h.time}</span>
     </div>
   `).join('');
@@ -223,7 +320,7 @@ document.getElementById('historyToggle').addEventListener('click', () => {
   const list = document.getElementById('historyList');
   const toggle = document.getElementById('historyToggle');
   list.classList.toggle('show');
-  toggle.textContent = list.classList.contains('show') ? '收起历史记录 ▴' : '查看历史记录 ▾';
+  toggle.textContent = list.classList.contains('show') ? 'Hide history ▴' : 'View history ▾';
   if (list.classList.contains('show')) renderHistory();
 });
 
@@ -238,6 +335,7 @@ function drawCard() {
   const card = document.getElementById('card');
   const btn = document.getElementById('drawBtn');
   btn.disabled = true;
+  document.getElementById('summaryBox').classList.remove('show');
 
   if (isFlipped) {
     card.classList.remove('flipped');
@@ -258,34 +356,32 @@ function showNewCard() {
   currentReversed = reversed;
 
   document.getElementById('symbol').textContent = pick.symbol;
-  document.getElementById('cardName').textContent = pick.name + (reversed ? "（逆位）" : "（正位）");
+  document.getElementById('cardName').textContent = pick.name + (reversed ? " (Reversed)" : " (Upright)");
   const orientEl = document.getElementById('orientation');
-  orientEl.textContent = reversed ? "逆位" : "正位";
+  orientEl.textContent = reversed ? "Reversed" : "Upright";
   orientEl.className = "orientation " + (reversed ? "reversed" : "upright");
 
-  document.getElementById('detailTitle').textContent = pick.name + " · " + (reversed ? "逆位解读" : "正位解读");
+  document.getElementById('detailTitle').textContent = pick.name + " · " + (reversed ? "Reversed Meaning" : "Upright Meaning");
   document.getElementById('detailText').textContent = reversed ? pick.rev : pick.up;
+  document.getElementById('adviceText').textContent = reversed ? pick.revAdvice : pick.upAdvice;
 
-  // 更新打卡和次数
   const today = todayStr();
   if (state.lastDate !== today) {
-    // 判断是否连续(昨天有抽过)
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
-    if (state.lastDate === yStr) {
-      state.streak += 1;
-    } else {
-      state.streak = 1;
-    }
+    if (state.lastDate === yStr) { state.streak += 1; } else { state.streak = 1; }
     state.lastDate = today;
     state.drawsToday = 0;
+    state.todaysDraws = [];
   }
   state.drawsToday += 1;
-  state.history.push({
+  const entry = {
     name: pick.name, symbol: pick.symbol, reversed: reversed,
-    time: new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'})
-  });
+    time: new Date().toLocaleString('en-US', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'})
+  };
+  state.history.push(entry);
+  state.todaysDraws.push(entry);
   saveState(state);
   updateStatsBar();
 
@@ -296,8 +392,59 @@ function showNewCard() {
       document.getElementById('detail').classList.add('show');
       document.getElementById('shareBtn').style.display = 'inline-block';
       document.getElementById('drawBtn').disabled = state.drawsToday >= DAILY_LIMIT;
+      if (state.drawsToday >= DAILY_LIMIT) {
+        setTimeout(showDailySummary, 600);
+      }
     }, 300);
   });
+}
+
+function showDailySummary() {
+  const draws = state.todaysDraws;
+  if (!draws || draws.length === 0) return;
+
+  const reversedCount = draws.filter(d => d.reversed).length;
+  const uprightCount = draws.length - reversedCount;
+
+  let tagClass, tagLabel, opening;
+  if (reversedCount <= 1) {
+    tagClass = "tag-positive"; tagLabel = "Mostly Favorable";
+    opening = "Today's five cards lean strongly positive. Most of your draws came up upright, which suggests the energy around you right now genuinely supports moving forward.";
+  } else if (reversedCount >= 4) {
+    tagClass = "tag-challenging"; tagLabel = "A Period of Resistance";
+    opening = "Today's five cards lean heavily reversed. This isn't a bad omen so much as a signal that something is currently blocked, delayed, or asking to be looked at differently before you push ahead.";
+  } else {
+    tagClass = "tag-mixed"; tagLabel = "Mixed Signals";
+    opening = "Today's five cards are a genuine mix of upright and reversed. That usually means the situation has both a clear opportunity and a real obstacle in it at the same time — neither should be ignored.";
+  }
+
+  // 找出抽到的牌名(去重)，用于具体点出来
+  const names = draws.map(d => d.name);
+  const uniqueNames = [...new Set(names)];
+
+  let cardMentions = "";
+  if (uniqueNames.length === 1) {
+    cardMentions = `You actually drew ${names.length === draws.length ? 'the same card, ' + uniqueNames[0] + ',' : uniqueNames[0]} more than once today — when a card repeats, it's worth paying extra attention to, since it's reinforcing the same message rather than offering a new one.`;
+  } else {
+    cardMentions = `Across the five draws, the strongest signals came from ${uniqueNames.slice(0, 3).join(", ")}${uniqueNames.length > 3 ? ", among others" : ""}. Read together, they point toward one overall theme rather than five separate ones.`;
+  }
+
+  let closing;
+  if (reversedCount <= 1) {
+    closing = "Action for today: this is a good window to push forward on whatever you've been hesitating about. Persisting is the right move — the conditions are more in your favor than they may feel.";
+  } else if (reversedCount >= 4) {
+    closing = "Action for today: don't force the issue right now. Step back, gather more information, and revisit the decision once at least one of these blocked areas clears — pushing harder against this much resistance usually backfires.";
+  } else {
+    closing = "Action for today: move forward on the part that feels clear and upright, but pause on the part that feels reversed or uncertain. Treat this as 'proceed with one piece, wait on the other' rather than an all-or-nothing call.";
+  }
+
+  document.getElementById('summaryCards').innerHTML = draws.map(d => `<span title="${d.name}">${d.symbol}</span>`).join('');
+  document.getElementById('summaryTag').textContent = tagLabel;
+  document.getElementById('summaryTag').className = "summary-tag " + tagClass;
+  document.getElementById('summaryText').innerHTML =
+    opening + "<br><br>" + cardMentions + "<br><br>" + closing;
+
+  document.getElementById('summaryBox').classList.add('show');
 }
 
 function generateShareImage() {
@@ -305,14 +452,12 @@ function generateShareImage() {
   const canvas = document.getElementById('shareCanvas');
   const ctx = canvas.getContext('2d');
 
-  // 背景
   const grad = ctx.createLinearGradient(0, 0, 0, 800);
   grad.addColorStop(0, '#1a1033');
   grad.addColorStop(1, '#0a0618');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 600, 800);
 
-  // 卡片框
   ctx.strokeStyle = 'rgba(255,255,255,0.2)';
   ctx.lineWidth = 2;
   ctx.strokeRect(60, 140, 480, 520);
@@ -320,27 +465,25 @@ function generateShareImage() {
   ctx.textAlign = 'center';
   ctx.fillStyle = '#f0e6ff';
   ctx.font = '32px sans-serif';
-  ctx.fillText('🔮 每日塔罗', 300, 80);
+  ctx.fillText('🔮 Daily Tarot', 300, 80);
 
   ctx.font = '90px sans-serif';
   ctx.fillText(currentPick.symbol, 300, 320);
 
-  ctx.font = 'bold 36px sans-serif';
+  ctx.font = 'bold 32px sans-serif';
   ctx.fillStyle = '#fff';
-  ctx.fillText(currentPick.name + (currentReversed ? '（逆位）' : '（正位）'), 300, 400);
-
-  ctx.font = '20px sans-serif';
-  ctx.fillStyle = currentReversed ? '#e69898' : '#8ee6a8';
-  ctx.fillText(currentReversed ? '逆位' : '正位', 300, 440);
+  ctx.fillText(currentPick.name, 300, 390);
+  ctx.font = '22px sans-serif';
+  ctx.fillText(currentReversed ? '(Reversed)' : '(Upright)', 300, 425);
 
   ctx.font = '18px sans-serif';
   ctx.fillStyle = '#d8c8f0';
   const text = currentReversed ? currentPick.rev : currentPick.up;
-  wrapText(ctx, text, 300, 500, 380, 30);
+  wrapText(ctx, text, 300, 480, 420, 28);
 
   ctx.font = '14px sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.fillText('扫码或访问网站，抽一张属于你的牌', 300, 720);
+  ctx.fillText('Draw your own card — link in bio', 300, 730);
 
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
@@ -354,24 +497,26 @@ function generateShareImage() {
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  let chars = text.split('');
+  let words = text.split(' ');
   let line = '';
   let lines = [];
-  for (let c of chars) {
-    const testLine = line + c;
+  for (let w of words) {
+    const testLine = line + w + ' ';
     if (ctx.measureText(testLine).width > maxWidth && line !== '') {
       lines.push(line);
-      line = c;
+      line = w + ' ';
     } else {
       line = testLine;
     }
   }
   lines.push(line);
-  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+  lines.forEach((l, i) => ctx.fillText(l.trim(), x, y + i * lineHeight));
 }
 
-// 初始化
 updateStatsBar();
+if (state.drawsToday >= DAILY_LIMIT && state.todaysDraws && state.todaysDraws.length > 0) {
+  showDailySummary();
+}
 </script>
 
 </body>
