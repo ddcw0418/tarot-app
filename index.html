@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5040614835852677"
-     crossorigin="anonymous"></script><meta charset="UTF-8">
+     crossorigin="anonymous"></script>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily Tarot · Draw Your Card</title>
 <style>
@@ -25,24 +26,23 @@
     border-radius: 16px; padding: 6px 14px; display: flex; align-items: center; gap: 5px; }
   .stat-pill .num { font-weight: 700; color: #d4b8ff; }
 
-  .stage { width: 210px; height: 330px; perspective: 1200px; margin-bottom: 18px; }
+  .stage { width: 240px; height: 380px; perspective: 1200px; margin-bottom: 18px; }
   .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
     transition: transform 0.7s cubic-bezier(.4,.2,.2,1); cursor: pointer; }
   .card.flipped { transform: rotateY(180deg); }
-  .face { position: absolute; width: 100%; height: 100%; border-radius: 16px;
+  .face { position: absolute; width: 100%; height: 100%; border-radius: 14px;
     backface-visibility: hidden; display: flex; flex-direction: column;
     align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.15); }
-  .back { background: linear-gradient(135deg, #2d1b4e, #4a2c6e); font-size: 60px; }
-  .back::after { content: "✦"; color: rgba(255,255,255,0.3); font-size: 90px; position: absolute; }
-  .front { background: linear-gradient(160deg, #2a1f4a, #1a1230); transform: rotateY(180deg);
-    padding: 16px; text-align: center; }
-  .front .symbol { font-size: 46px; margin-bottom: 8px; }
-  .front .name { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-  .front .orientation { font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 8px; }
+    border: 2px solid rgba(255,255,255,0.15); overflow: hidden; }
+  .back { background: linear-gradient(135deg, #2d1b4e, #4a2c6e); }
+  .back .back-symbol { font-size: 70px; color: rgba(255,255,255,0.25); }
+  .front { background: #1a1230; transform: rotateY(180deg); padding: 0; }
+  .front img.card-art { width: 100%; height: 68%; object-fit: cover; display: block; }
+  .front .card-info { width: 100%; padding: 10px 14px 12px; text-align: center; }
+  .front .name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .front .orientation { font-size: 10px; padding: 2px 9px; border-radius: 10px; margin-bottom: 4px; display: inline-block; }
   .orientation.upright { background: rgba(120,220,150,0.2); color: #8ee6a8; }
   .orientation.reversed { background: rgba(220,120,120,0.2); color: #e69898; }
-  .front .desc { font-size: 11px; line-height: 1.45; color: #d8c8f0; }
 
   .btn-row { display: flex; gap: 10px; }
   button { background: linear-gradient(135deg, #6b3fa0, #9d5fc9); color: #fff; border: none;
@@ -107,11 +107,13 @@
 
 <div class="stage">
   <div class="card" id="card">
-    <div class="face back"></div>
+    <div class="face back"><span class="back-symbol">✦</span></div>
     <div class="face front">
-      <div class="symbol" id="symbol"></div>
-      <div class="name" id="cardName"></div>
-      <div class="orientation" id="orientation"></div>
+      <img class="card-art" id="cardArt" src="" alt="">
+      <div class="card-info">
+        <div class="name" id="cardName"></div>
+        <div class="orientation" id="orientation"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -150,112 +152,112 @@
 
 <script>
 const cards = [
-  {name:"The Fool", symbol:"🃏",
+  {name:"The Fool", symbol:"🃏", img:"card01.jpg",
     up:"A fresh start is calling. You're stepping into the unknown with a light heart and open mind — trust the leap, even without a guaranteed outcome. Curiosity and spontaneity are your allies right now, not weaknesses.",
     upAdvice:"Take the first small step today, even an imperfect one. Don't wait for a complete plan before you begin — momentum will teach you more than overthinking will.",
     rev:"Recklessness or naivety may be working against you. Before jumping into something new, slow down and check whether you've actually thought it through, or if you're avoiding a harder decision.",
     revAdvice:"Pause for 24 hours before committing to anything big. Write down what you're actually afraid of facing — that's usually the real decision hiding underneath."},
-  {name:"The Magician", symbol:"🎩",
+  {name:"The Magician", symbol:"🎩", img:"card02.jpg",
     up:"You have every tool you need to manifest what you want — skill, willpower, and resources are aligned. This is a moment of action: stop preparing and start creating, the conditions are right.",
     upAdvice:"Pick the one task you've been postponing and finish it this week. You already have what's required — the missing piece is simply starting.",
     rev:"Talent is being misused, manipulated, or left untapped. Watch for self-deception or someone using charm to mislead you — including yourself.",
     revAdvice:"Double-check any deal, promise, or plan that feels too smooth right now. If something is being oversold to you, ask one more pointed question before agreeing."},
-  {name:"The High Priestess", symbol:"🌙",
+  {name:"The High Priestess", symbol:"🌙", img:"card03.jpg",
     up:"Your intuition is sharper than your logic right now. Listen to what your gut is telling you before seeking outside answers — some things aren't meant to be fully explained yet, only sensed.",
     upAdvice:"Before asking others for advice on this, sit quietly for ten minutes and notice what your own first instinct already told you.",
     rev:"You may be ignoring your own instincts, or secrets and hidden information are clouding the situation. Step back and observe more before reacting.",
     revAdvice:"Don't make the decision today. Gather a bit more information first, especially anything that's currently being kept from you."},
-  {name:"The Empress", symbol:"🌸",
+  {name:"The Empress", symbol:"🌸", img:"card04.jpg",
     up:"Abundance, nurturing, and creative growth surround you. Whatever you've been tending — a relationship, a project, an idea — is ready to flourish if you keep caring for it patiently.",
     upAdvice:"Keep doing what you're doing, just a little more consistently. This is a growth phase, not a moment that needs a dramatic new move.",
     rev:"You may be over-giving to others while neglecting yourself, or creative energy feels blocked. This is a reminder that nurturing starts with you.",
     revAdvice:"Block out time this week purely for yourself, with no obligation attached. You can't keep pouring from an empty cup."},
-  {name:"The Emperor", symbol:"👑",
+  {name:"The Emperor", symbol:"👑", img:"card05.jpg",
     up:"Structure, discipline, and clear authority are what the moment calls for. Set firm boundaries, build a plan, and take ownership — stability comes from the order you create.",
     upAdvice:"Write down one clear rule or boundary you'll hold yourself to this week, and actually follow through on it without exceptions.",
     rev:"Rigidity or controlling behavior is causing friction, or your sense of authority feels shaken. Loosen your grip slightly and allow more flexibility into the situation.",
     revAdvice:"Pick one thing you're currently trying to control and consciously let it go for a few days. Notice what actually happens."},
-  {name:"The Hierophant", symbol:"📿",
+  {name:"The Hierophant", symbol:"📿", img:"card06.jpg",
     up:"Tradition, structure, and established wisdom serve you well right now. Following a proven path, a mentor, or a set of rules will keep you grounded and moving forward safely.",
     upAdvice:"Find someone who has already solved the problem you're facing and ask how they did it, instead of improvising alone.",
     rev:"Rigid dogma is holding you back from your own truth. It's time to question outdated rules and find your own way, even if it breaks convention.",
     revAdvice:"Identify one rule you're following purely out of habit or pressure, and ask whether it still actually serves you."},
-  {name:"The Lovers", symbol:"💞",
+  {name:"The Lovers", symbol:"💞", img:"card07.jpg",
     up:"A meaningful connection or an important choice is in front of you. Harmony comes from shared values — when two paths (or people) align in what truly matters, the bond grows stronger.",
     upAdvice:"Have an honest conversation about what you both actually want, rather than assuming you already know.",
     rev:"A relationship feels out of balance, or you're struggling between two choices. Get clear on what you actually value before deciding anything.",
     revAdvice:"List your non-negotiables on paper before making the choice. Decide from that list, not from pressure or guilt."},
-  {name:"The Chariot", symbol:"🏆",
+  {name:"The Chariot", symbol:"🏆", img:"card08.jpg",
     up:"Willpower and focused determination will carry you through competition or conflict. Stay disciplined, keep your direction clear, and victory is within reach.",
     upAdvice:"Set one specific, measurable goal for the next 7 days and protect the time to work on it daily, no matter what.",
     rev:"You may feel like you're losing control or direction, pulled in two ways at once. Pause and realign before pushing forward again.",
     revAdvice:"Stop and write down your actual destination before taking another step. Effort without direction will just exhaust you faster."},
-  {name:"Strength", symbol:"🦁",
+  {name:"Strength", symbol:"🦁", img:"card09.jpg",
     up:"Quiet courage paired with patience and compassion is more powerful than force. You can handle this challenge calmly — gentleness is its own kind of strength.",
     upAdvice:"Face the difficult conversation or task calmly rather than aggressively — your composure will be more persuasive than pressure.",
     rev:"Self-doubt or insecurity is undermining your confidence. Remember a moment when you were genuinely strong — that capacity hasn't disappeared, it's just buried right now.",
     revAdvice:"Write down one past moment where you handled something hard well. Reread it before you do the thing you're currently dreading."},
-  {name:"The Hermit", symbol:"🏮",
+  {name:"The Hermit", symbol:"🏮", img:"card10.jpg",
     up:"This is a season for solitude and inner reflection. The answer you're searching for won't come from outside noise — it's waiting quietly within you.",
     upAdvice:"Give yourself one full evening without input from social media or other people's opinions, and just think.",
     rev:"Isolation has gone on too long and is starting to feel lonely rather than restorative. Reaching out to someone, even briefly, could help more than more alone time.",
     revAdvice:"Message one person today, even briefly — isolation has crossed from helpful into draining."},
-  {name:"Wheel of Fortune", symbol:"🎡",
+  {name:"Wheel of Fortune", symbol:"🎡", img:"card11.jpg",
     up:"Change is already in motion, and resisting it will only cause friction. Go with the momentum — this cycle is working in your favor if you let it.",
     upAdvice:"Say yes to the opportunity in front of you instead of waiting for a 'better' one — timing is currently on your side.",
     rev:"Bad luck or sudden setbacks feel destabilizing, but remember that every cycle turns. What feels stuck now will not stay this way forever.",
     revAdvice:"Don't make a permanent decision based on a temporary low point. Give the situation one more cycle before judging it as final."},
-  {name:"Justice", symbol:"⚖️",
+  {name:"Justice", symbol:"⚖️", img:"card12.jpg",
     up:"Fairness and cause-and-effect are at play. Being honest — with others and yourself — will lead to a result that actually holds up over time.",
     upAdvice:"If there's a truth you've been softening or avoiding saying out loud, say it plainly today — it will resolve faster than you expect.",
     rev:"Something feels unfair, or a judgment (yours or someone else's) may be biased. Re-examine the situation for blind spots before deciding what's truly right.",
     revAdvice:"Before reacting to what feels unfair, write out the other side's perspective in full, even if you disagree with it."},
-  {name:"The Hanged Man", symbol:"🙃",
+  {name:"The Hanged Man", symbol:"🙃", img:"card13.jpg",
     up:"Pausing and looking at this from a completely different angle will reveal more than rushing to act. Sometimes the most productive thing is to do nothing — for now.",
     upAdvice:"Deliberately delay your decision by 48 hours and spend that time looking at the problem from someone else's point of view.",
     rev:"Staying stuck for too long has turned from a pause into avoidance. It's time to actually make the change you've been delaying.",
     revAdvice:"Pick the smallest possible version of the change you've been avoiding, and do that one small piece today."},
-  {name:"Death", symbol:"🦋",
+  {name:"Death", symbol:"🦋", img:"card14.jpg",
     up:"One chapter is ending so a new one can begin. This isn't something to fear — endings make space for transformation, even when they're uncomfortable.",
     upAdvice:"Actively close the chapter instead of letting it fade — say the goodbye, send the message, finish the task. Closure creates room for what's next.",
     rev:"You're resisting a necessary change, holding on to something that has already run its course. Letting go, though hard, will bring relief.",
     revAdvice:"Name out loud (or in writing) the one thing you know you need to let go of. Naming it is the first real step toward releasing it."},
-  {name:"Temperance", symbol:"⚗️",
+  {name:"Temperance", symbol:"⚗️", img:"card15.jpg",
     up:"Balance and patience will serve you far better than urgency. Moving steadily, blending opposing forces calmly, leads to a more lasting result than rushing ever could.",
     upAdvice:"Slow your pace deliberately this week — pick consistency over intensity, and avoid all-or-nothing decisions.",
     rev:"Something in your life is out of balance — too much of one thing, not enough of another. Notice where moderation has slipped.",
     revAdvice:"Identify the one area where you've gone to an extreme — too much work, too little rest, too much of someone's opinion — and pull it back toward center."},
-  {name:"The Devil", symbol:"⛓️",
+  {name:"The Devil", symbol:"⛓️", img:"card16.jpg",
     up:"You may feel trapped by a habit, temptation, or unhealthy attachment. The first step to freedom is honestly naming exactly what's holding you back.",
     upAdvice:"Write down, specifically, the habit or pattern that's controlling you right now. Clarity about it is more useful than guilt about it.",
     rev:"You're beginning to break free from something that has limited you. Freedom is close — keep taking that next small step away from it.",
     revAdvice:"Keep doing whatever you just did that created distance from the old pattern — repeat that exact action again today."},
-  {name:"The Tower", symbol:"⚡",
+  {name:"The Tower", symbol:"⚡", img:"card17.jpg",
     up:"A sudden, disruptive change is breaking down an old structure. It feels chaotic now, but what falls away was likely no longer serving you — something more honest can be rebuilt.",
     upAdvice:"Don't rush to rebuild exactly what just fell apart. Take stock of what's actually solid before reconstructing anything.",
     rev:"Fear of disaster is causing you to avoid a confrontation that needs to happen. Delaying it usually makes the eventual impact larger, not smaller.",
     revAdvice:"Have the conversation or make the call you've been postponing out of fear — this week, not next month."},
-  {name:"The Star", symbol:"⭐",
+  {name:"The Star", symbol:"⭐", img:"card18.jpg",
     up:"Hope and healing are returning after a difficult period. You're regaining clarity and faith in the future — let this gentle optimism guide your next steps.",
     upAdvice:"Set one gentle, hopeful intention for the coming weeks and revisit it daily — this is a good season to plant something new.",
     rev:"Confidence feels low, or you've lost sight of your direction. Be patient with yourself; the light hasn't gone out, it's just temporarily dim.",
     revAdvice:"Lower the bar for what counts as progress today. A small, honest step still counts, even if it doesn't feel inspiring yet."},
-  {name:"The Moon", symbol:"🌕",
+  {name:"The Moon", symbol:"🌕", img:"card19.jpg",
     up:"Intuition and the subconscious are especially active right now. Things may not be exactly as they appear on the surface — trust your instincts over assumptions.",
     upAdvice:"Hold off on taking anything at face value today. If something feels off, trust that signal even without full proof yet.",
     rev:"Confusion is starting to clear, and the truth behind a situation is coming into focus. What felt murky will soon make more sense.",
     revAdvice:"Keep paying attention — don't act yet. The clarity you need is close but not complete; a few more days will make the picture obvious."},
-  {name:"The Sun", symbol:"☀️",
+  {name:"The Sun", symbol:"☀️", img:"card20.jpg",
     up:"Success, vitality, and genuine joy are flowing strongly right now. This is one of the most positive cards in the deck — enjoy this bright stretch fully.",
     upAdvice:"Use this high-energy window to push forward on the thing that matters most to you — momentum is genuinely on your side right now.",
     rev:"A temporary cloud is dimming what should be a happy moment, but it won't last. The underlying energy is still good — give it a little more time.",
     revAdvice:"Don't abandon something good just because today felt off. Give it a few more days before deciding the positive momentum is gone."},
-  {name:"Judgement", symbol:"📯",
+  {name:"Judgement", symbol:"📯", img:"card21.jpg",
     up:"A moment of reckoning or awakening is calling you to reassess. Past experiences are surfacing for a reason — they're informing an important decision ahead.",
     upAdvice:"Look back honestly at a past situation that's resurfacing in your mind, and ask what it's actually trying to teach you about your next move.",
     rev:"Harsh self-judgment is weighing you down more than it's helping. Extend yourself the same compassion you'd offer someone else in your position.",
     revAdvice:"Write down what you'd tell a friend in your exact situation, then say that same thing to yourself."},
-  {name:"The World", symbol:"🌍",
+  {name:"The World", symbol:"🌍", img:"card22.jpg",
     up:"Completion and fulfillment — a major cycle is closing in a satisfying way. Take a moment to actually acknowledge how far you've come.",
     upAdvice:"Before jumping into the next goal, take a real moment to celebrate finishing this one — don't skip straight to the next thing.",
     rev:"You're close to finishing something important but not quite there yet. Resist the urge to give up right before the finish line.",
@@ -356,7 +358,9 @@ function showNewCard() {
   currentPick = pick;
   currentReversed = reversed;
 
-  document.getElementById('symbol').textContent = pick.symbol;
+  const artEl = document.getElementById('cardArt');
+  artEl.src = pick.img;
+  artEl.alt = pick.name;
   document.getElementById('cardName').textContent = pick.name + (reversed ? " (Reversed)" : " (Upright)");
   const orientEl = document.getElementById('orientation');
   orientEl.textContent = reversed ? "Reversed" : "Upright";
@@ -459,42 +463,54 @@ function generateShareImage() {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 600, 800);
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(60, 140, 480, 520);
-
   ctx.textAlign = 'center';
   ctx.fillStyle = '#f0e6ff';
   ctx.font = '32px sans-serif';
-  ctx.fillText('🔮 Daily Tarot', 300, 80);
+  ctx.fillText('🔮 Daily Tarot', 300, 60);
 
-  ctx.font = '90px sans-serif';
-  ctx.fillText(currentPick.symbol, 300, 320);
+  const artImg = new Image();
+  artImg.crossOrigin = 'anonymous';
+  artImg.onload = function() {
+    // draw artwork centered, maintaining aspect ratio, max height 380
+    const maxH = 380, maxW = 420;
+    let dw = artImg.width, dh = artImg.height;
+    const scale = Math.min(maxW / dw, maxH / dh);
+    dw *= scale; dh *= scale;
+    const dx = 300 - dw / 2, dy = 90;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(dx - 2, dy - 2, dw + 4, dh + 4);
+    ctx.drawImage(artImg, dx, dy, dw, dh);
+    ctx.restore();
 
-  ctx.font = 'bold 32px sans-serif';
-  ctx.fillStyle = '#fff';
-  ctx.fillText(currentPick.name, 300, 390);
-  ctx.font = '22px sans-serif';
-  ctx.fillText(currentReversed ? '(Reversed)' : '(Upright)', 300, 425);
+    ctx.font = 'bold 30px sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(currentPick.name, 300, dy + dh + 45);
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = currentReversed ? '#e69898' : '#8ee6a8';
+    ctx.fillText(currentReversed ? '(Reversed)' : '(Upright)', 300, dy + dh + 75);
 
-  ctx.font = '18px sans-serif';
-  ctx.fillStyle = '#d8c8f0';
-  const text = currentReversed ? currentPick.rev : currentPick.up;
-  wrapText(ctx, text, 300, 480, 420, 28);
+    ctx.font = '17px sans-serif';
+    ctx.fillStyle = '#d8c8f0';
+    const text = currentReversed ? currentPick.rev : currentPick.up;
+    wrapText(ctx, text, 300, dy + dh + 115, 460, 26);
 
-  ctx.font = '14px sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.fillText('Draw your own card — link in bio', 300, 730);
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillText('Draw your own card — link in bio', 300, 770);
 
-  canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = currentPick.name + '.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  });
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentPick.name + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+  };
+  artImg.src = currentPick.img;
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
