@@ -359,7 +359,7 @@ function showNewCard() {
   currentReversed = reversed;
 
   const artEl = document.getElementById('cardArt');
-  
+  artEl.src = 'cards/' + pick.img;
   artEl.alt = pick.name;
   document.getElementById('cardName').textContent = pick.name + (reversed ? " (Reversed)" : " (Upright)");
   const orientEl = document.getElementById('orientation');
